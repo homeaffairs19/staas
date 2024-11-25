@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dropbox File Upload & Download</title>
+</head>
+<body>
+    <h1>Upload and Download Files from Dropbox</h1>
+    <h2>Upload File to Dropbox</h2>
+    <form action="http://localhost:3000/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" required />
+        <button type="submit">Upload File</button>
+    </form>
+    <h2>Download File from Dropbox</h2>
+    <label for="fileName">Enter File Name to Download:</label>
+    <input type="text" id="fileName" placeholder="Enter file name" />
+    <button id="downloadButton">Download File</button>
+    <script>
+    document.getElementById('downloadButton').addEventListener('click', function () {
+        const fileName = document.getElementById('fileName').value.trim();
+        if (!fileName) {
+            alert('Please enter a file name!');
+            return;
+        }
+        fetch(`http://localhost:3000/download?fileName=${fileName}`, {
+            method: 'GET',
+        })
+        .then(response => response.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = fileName;
+            link.click();
+        })
+        .catch(error => console.error('Error downloading file:', error));
+    });
+    </script>
+</body>
+</html>
